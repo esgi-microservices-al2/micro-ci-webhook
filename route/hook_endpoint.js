@@ -23,7 +23,7 @@ router.post('/', async (req, res) => {
     }
     return res.status(400).end();*/
 
-    console.log("Post request received");
+    console.log("Post request received : ", req);
     return res.status(200).end();
 
 
