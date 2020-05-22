@@ -12,11 +12,13 @@ jobs:
       uses: actions/checkout@v1
 
     # Add your build steps here
-    - name: Build project  
+    - name: Setup node 
       uses: actions/setup-node@v1
       with:
         node-version: '14.x'
-        run: npm install && npm run build --if-present
+        
+    - name: Build project
+      run: npm install && npm run build --if-present
 
   # Uncomment and replace {userName} by your account folder name
   # deploy:
