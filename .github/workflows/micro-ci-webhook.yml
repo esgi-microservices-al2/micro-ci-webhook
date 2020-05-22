@@ -16,8 +16,8 @@ jobs:
       uses: actions/setup-node@v1
       with:
         node-version: '14.3-alpine'
-      - run: npm install
-      - run: npm run build --if-present
+    - run: npm install
+    - run: npm run build --if-present
 
   # Uncomment and replace {userName} by your account folder name
   # deploy:
