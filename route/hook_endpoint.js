@@ -2,32 +2,39 @@
 
 const express = require('express');
 const bodyParser = require('body-parser');
+const sendMessage = require('../amqp/emit_payload_topic');
+const receiveMessage = require('../amqp/receive_payload_topic');
+
+const asyncMiddleware = require('../utils/asyncMiddleware');
 
 const router = express.Router();
 router.use(bodyParser.json());
 
-router.post('/', async (req, res) => {
+router.post('/', asyncMiddleware( async (req, res) => {
+    let message = req.body.message;
+    let routingKey = req.query["routingKey"];
 
-    /*const libelle = req.body.libelle;
-    if (libelle) {
-        let result = await ProduitController.addProductCategory(libelle);
+    if (typeof message == 'undefined')
+        throw Error("message should not be empty");
+    if (typeof routingKey == 'undefined')
+        throw Error("routingKey should not be empty");
 
-        if (result != 500) {
-
-            return res.status(201).end();
+    sendMessage(routingKey, message,  async (err, response) => {
+        if (err) {
+            return res.status(500).json(err);
+        } else {
+            return res.status(200).json(response);
         }
-        else {
-            return res.status(500).end();
-        }
-
-    }
-    return res.status(400).end();*/
-
-    console.log("Post request received : ", req);
-    return res.status(200).end();
+    });
+}));
 
 
+router.get('/', asyncMiddleware( async (req, res) => {
+    let routingKey = req.query["routingKey"];
+    if (typeof routingKey == 'undefined')
+        throw Error("rountingKey should not be empty");
 
-});
+    receiveMessage(routingKey);
+}));
 
 module.exports = router;
