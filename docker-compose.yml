@@ -8,7 +8,8 @@ services:
     ports:
       - "${WEBHOOK_PORT:-9000}:3000"
     environment:
-      - BROKER_URL=${BROKER:-broker}
+      - BROKER_IP=${BROKER_IP:-broker}
+      - WEBHOOK_PORT=${WEBHOOK_PORT:-9000}
     networks:
       - micro-ci:
 
