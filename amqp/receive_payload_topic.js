@@ -4,7 +4,7 @@ var amqp = require('amqplib/callback_api');
 
 
 function receiveMessage(routingKey) {
-    amqp.connect('amqp://'.concat(process.env.BROKER_URL), function(error0, connection) {
+    amqp.connect('amqp://'.concat(process.env.BROKER_IP), function(error0, connection) {
         connection.createChannel(function(error1, channel) {
             if (error1) {
                 throw error1;

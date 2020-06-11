@@ -6,7 +6,7 @@
 
 Settez les variables d'environnement dans votre terminal :
 
-`set BROKER_URL=127.0.0.1` - IP du Broker
+`set BROKER_IP=127.0.0.1` - IP du Broker
 
 
 ## II. Lancement de l'API via avec npm
@@ -31,7 +31,7 @@ Lancer avec Docker:
 
 ```
 docker build . -t "micro-ci"
-docker run -e BROKER_URL -p 3000:3000 --name="micro-ci" micro-ci
+docker run -e BROKER_IP -p 3000:3000 --name="micro-ci" micro-ci
 ```
 
 Lancer avec Docker-compose:
