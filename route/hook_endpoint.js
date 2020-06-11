@@ -51,7 +51,6 @@ router.post('/github', asyncMiddleware(async(req, res) => {
             return res.status(200).json(response);
         }
     });
-    return res.status(200).end();
 }));
 
 router.post('/gitlab', asyncMiddleware(async(req, res) => {
@@ -87,7 +86,6 @@ router.post('/gitlab', asyncMiddleware(async(req, res) => {
             return res.status(200).json(response);
         }
     });
-    return res.status(200).end();
 }));
 
 module.exports = router;
