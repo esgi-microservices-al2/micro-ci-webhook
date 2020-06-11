@@ -16,14 +16,26 @@ function sendMessage(rountingKey, message, callback) {
                     throw error1;
                 }
 
-                let exchange = 'webhook_messages';
+                let exchange = 'webhook_messages_x';
                 channel.assertExchange(exchange, 'topic', {
                     durable: true
                 });
-                channel.publish(exchange, rountingKey, Buffer.from(message));
-                res = "[x] Sent %s:'%s'" + rountingKey + ":" + message;
 
-                callbackCalled = callback(null, res);
+                let queue = 'webhook_messages_q';
+                channel.assertQueue(queue, {
+                    durable: true
+                }, function(error2, q) {
+                    if (error2) {
+                        throw error2;
+                    }
+                    channel.bindQueue(q.queue, exchange, '#');
+                    channel.publish(exchange, rountingKey, Buffer.from(message));
+                    res = "[x] Sent %s:'%s'" + rountingKey + ":" + message;
+
+                    callbackCalled = callback(null, res);
+                });
+
+
             });
         } catch (e) {
             //TODO: Log the error, console.log for the moment

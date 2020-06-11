@@ -12,6 +12,6 @@ const app = express();
 app.use(morgan('dev'));
 
 routerBuilder.build(app);
-console.log(process.env.BROKER_URL)
+
 const port = process.env.PORT || 3000;
 app.listen(port, () => console.log(`Server listening on ${port}...`));
