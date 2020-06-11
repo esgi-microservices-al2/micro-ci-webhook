@@ -42,9 +42,9 @@ router.post('/github', asyncMiddleware(async(req, res) => {
     console.log("Output object for RabbitMQ (JSON) : ", payload);
 
     if (typeof payload == 'undefined')
-        throw Error("message should not be empty");
+        throw Error("payload should not be empty");
 
-    sendMessage("webhook.new.github", message,  async (err, response) => {
+    sendMessage("webhook.new.github", payload,  async (err, response) => {
         if (err) {
             return res.status(500).json(err);
         } else {
@@ -78,9 +78,9 @@ router.post('/gitlab', asyncMiddleware(async(req, res) => {
     console.log("Output object for RabbitMQ (JSON) : ", output);
 
     if (typeof payload == 'undefined')
-        throw Error("message should not be empty");
+        throw Error("payload should not be empty");
 
-    sendMessage("webhook.new.gitlab", message,  async (err, response) => {
+    sendMessage("webhook.new.gitlab", payload,  async (err, response) => {
         if (err) {
             return res.status(500).json(err);
         } else {
