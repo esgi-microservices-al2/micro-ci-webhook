@@ -28,7 +28,7 @@ function sendMessage(rountingKey, message, callback) {
                     if (error2) {
                         throw error2;
                     }
-                    channel.bindQueue(q.queue, exchange, '#');
+                    channel.bindQueue(q.queue, exchange, 'webhook.#');
                     channel.publish(exchange, rountingKey, Buffer.from(message));
                     res = "[x] Sent %s:'%s'" + rountingKey + ":" + message;
 
