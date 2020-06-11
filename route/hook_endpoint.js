@@ -10,25 +10,6 @@ const asyncMiddleware = require('../utils/asyncMiddleware');
 const router = express.Router();
 router.use(bodyParser.json());
 
-router.post('/', asyncMiddleware( async (req, res) => {
-    let message = req.body.message;
-    let routingKey = req.query["routingKey"];
-
-    if (typeof message == 'undefined')
-        throw Error("message should not be empty");
-    if (typeof routingKey == 'undefined')
-        throw Error("routingKey should not be empty");
-
-    sendMessage(routingKey, message,  async (err, response) => {
-        if (err) {
-            return res.status(500).json(err);
-        } else {
-            return res.status(200).json(response);
-        }
-    });
-}));
-
-
 router.get('/', asyncMiddleware( async (req, res) => {
     let routingKey = req.query["routingKey"];
     if (typeof routingKey == 'undefined')
@@ -37,10 +18,10 @@ router.get('/', asyncMiddleware( async (req, res) => {
     receiveMessage(routingKey);
 }));
 
-router.post('/github', async(req, res) => {
+router.post('/github', asyncMiddleware(async(req, res) => {
     console.log("Request from github received : ", req.body);
     let branchName = req.body.ref.toString().split('/').pop();
-    let output = {
+    let payload = {
         repository: {
             fullname: req.body.repository.full_name,
             name: req.body.repository.name,
@@ -57,15 +38,25 @@ router.post('/github', async(req, res) => {
         },
         timestamp: Date.now()
     };
-    req.body.commits.forEach(element => output.commits.push(element));
-    console.log("Output object for RabbitMQ (JSON) : ", output);
-    return res.status(200).end();
-});
+    req.body.commits.forEach(element => payload.commits.push(element));
+    console.log("Output object for RabbitMQ (JSON) : ", payload);
 
-router.post('/gitlab', async(req, res) => {
+    if (typeof payload == 'undefined')
+        throw Error("payload should not be empty");
+
+    sendMessage("webhook.github", payload, async (err, response) => {
+        if (err) {
+            return res.status(500).json(err);
+        } else {
+            return res.status(200).json(response);
+        }
+    });
+}));
+
+router.post('/gitlab', asyncMiddleware(async(req, res) => {
     console.log("Request from gitlab received : ", req.body);
     let branchName = req.body.ref.toString().split('/').pop();
-    let output = {
+    let payload = {
         repository: {
             fullname: req.body.project.path_with_namespace,
             name: req.body.project.name,
@@ -82,9 +73,19 @@ router.post('/gitlab', async(req, res) => {
         },
         timestamp: Date.now()
     };
-    req.body.commits.forEach(element => output.commits.push(element));
-    console.log("Output object for RabbitMQ (JSON) : ", output);
-    return res.status(200).end();
-})
+    req.body.commits.forEach(element => payload.commits.push(element));
+    console.log("Output object for RabbitMQ (JSON) : ", payload);
+
+    if (typeof payload == 'undefined')
+        throw Error("payload should not be empty");
+
+    sendMessage("webhook.gitlab", payload,async (err, response) => {
+        if (err) {
+            return res.status(500).json(err);
+        } else {
+            return res.status(200).json(response);
+        }
+    });
+}));
 
 module.exports = router;
