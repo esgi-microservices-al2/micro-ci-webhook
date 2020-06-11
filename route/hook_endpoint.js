@@ -56,7 +56,7 @@ router.post('/github', asyncMiddleware(async(req, res) => {
 router.post('/gitlab', asyncMiddleware(async(req, res) => {
     console.log("Request from gitlab received : ", req.body);
     let branchName = req.body.ref.toString().split('/').pop();
-    let output = {
+    let payload = {
         repository: {
             fullname: req.body.project.path_with_namespace,
             name: req.body.project.name,
@@ -73,8 +73,8 @@ router.post('/gitlab', asyncMiddleware(async(req, res) => {
         },
         timestamp: Date.now()
     };
-    req.body.commits.forEach(element => output.commits.push(element));
-    console.log("Output object for RabbitMQ (JSON) : ", output);
+    req.body.commits.forEach(element => payload.commits.push(element));
+    console.log("Output object for RabbitMQ (JSON) : ", payload);
 
     if (typeof payload == 'undefined')
         throw Error("payload should not be empty");

@@ -2,7 +2,7 @@
 
 var amqp = require('amqplib/callback_api');
 
-function sendMessage(rountingKey, message, callback) {
+function sendMessage(rountingKey, payload, callback) {
     let err = null;
     let res = null;
     let callbackCalled = false;
@@ -29,8 +29,8 @@ function sendMessage(rountingKey, message, callback) {
                         throw error2;
                     }
                     channel.bindQueue(q.queue, exchange, 'webhook.#');
-                    channel.publish(exchange, rountingKey, Buffer.from(message));
-                    res = "[x] Sent %s:'%s'" + rountingKey + ":" + message;
+                    channel.publish(exchange, rountingKey, Buffer.from(JSON.stringify(payload)));
+                    res = "[x] Sent %s:'%s'" + rountingKey + ":" + payload;
 
                     callbackCalled = callback(null, res);
                 });
