@@ -21,14 +21,14 @@ function sendMessage(rountingKey, payload, callback) {
                     durable: true
                 });
 
-                let queue = 'webhook_messages_q';
+                let queue = "webhook_new_payloads_q";
                 channel.assertQueue(queue, {
                     durable: true
                 }, function(error2, q) {
                     if (error2) {
                         throw error2;
                     }
-                    channel.bindQueue(q.queue, exchange, 'webhook.#');
+                    channel.bindQueue(q.queue, exchange, "webhook.#");
                     channel.publish(exchange, rountingKey, Buffer.from(JSON.stringify(payload)));
                     res = "[x] Sent %s:'%s'" + rountingKey + ":" + payload;
 
