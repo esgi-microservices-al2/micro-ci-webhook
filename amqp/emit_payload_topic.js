@@ -6,7 +6,7 @@ function sendMessage(rountingKey, payload, callback) {
     let err = null;
     let res = null;
     let callbackCalled = false;
-    amqp.connect('amqp://'.concat(process.env.BROKER_URL), function (error0, connection) {
+    amqp.connect('amqp://'.concat(process.env.BROKER_IP), function (error0, connection) {
         try {
             if (error0) {
                 throw error0;
