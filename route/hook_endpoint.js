@@ -44,7 +44,7 @@ router.post('/github', asyncMiddleware(async(req, res) => {
     if (typeof payload == 'undefined')
         throw Error("payload should not be empty");
 
-    sendMessage("webhook.github", payload, async (err, response) => {
+    sendMessage("webhook.payload.github", payload, async (err, response) => {
         if (err) {
             return res.status(500).json(err);
         } else {
@@ -79,7 +79,7 @@ router.post('/gitlab', asyncMiddleware(async(req, res) => {
     if (typeof payload == 'undefined')
         throw Error("payload should not be empty");
 
-    sendMessage("webhook.gitlab", payload,async (err, response) => {
+    sendMessage("webhook.payload.gitlab", payload,async (err, response) => {
         if (err) {
             return res.status(500).json(err);
         } else {

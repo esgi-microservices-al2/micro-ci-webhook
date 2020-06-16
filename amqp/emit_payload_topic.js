@@ -16,19 +16,19 @@ function sendMessage(rountingKey, payload, callback) {
                     throw error1;
                 }
 
-                let exchange = 'webhook_messages_x';
+                let exchange = 'amq.topic';
                 channel.assertExchange(exchange, 'topic', {
                     durable: true
                 });
 
-                let queue = "webhook_new_payloads_q";
+                let queue = "al2.payload.q";
                 channel.assertQueue(queue, {
                     durable: true
                 }, function(error2, q) {
                     if (error2) {
                         throw error2;
                     }
-                    channel.bindQueue(q.queue, exchange, "webhook.#");
+                    channel.bindQueue(q.queue, exchange, "webhook.payload.#");
                     channel.publish(exchange, rountingKey, Buffer.from(JSON.stringify(payload)));
                     res = "[x] Sent %s:'%s'" + rountingKey + ":" + payload;
 
