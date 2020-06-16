@@ -1,3 +1,243 @@
 {
-    "test": "test"
-}
+    "openapi" : "3.0.0",
+    "info" : {
+      "title" : "MicroService WebHook",
+      "description" : "Receive payloads from git repositories and send it to a RabbitMQ instance",
+      "version" : "1.0.0"
+    },
+    "servers" : [ {
+      "url" : "/"
+    } ],
+    "tags" : [ {
+      "name" : "Endpoints"
+    } ],
+    "paths" : {
+      "/github" : {
+        "post" : {
+          "tags" : [ "Endpoints" ],
+          "summary" : "endpoint for github repositories",
+          "requestBody" : {
+            "description" : "GitHub Payload",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/GitHubPayload"
+                }
+              }
+            }
+          },
+          "responses" : {
+            "200" : {
+              "description" : "success"
+            },
+            "400" : {
+              "description" : "bad request"
+            }
+          }
+        }
+      },
+      "/gitlab" : {
+        "post" : {
+          "tags" : [ "Endpoints" ],
+          "summary" : "endpoint for gitlab repositories",
+          "requestBody" : {
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/GitLabPayload"
+                }
+              }
+            }
+          },
+          "responses" : {
+            "200" : {
+              "description" : "success"
+            },
+            "400" : {
+              "description" : "bad request"
+            }
+          }
+        }
+      },
+      "/doc" : {
+        "get" : {
+          "tags" : [ "Endpoints" ],
+          "summary" : "endpoint for documentation",
+          "responses" : {
+            "200" : {
+              "description" : "Documentation",
+              "content" : {
+                "application/json" : {
+                  "schema" : {
+                    "type" : "array",
+                    "items" : {
+                      "$ref" : "#/components/schemas/Documentation"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "components" : {
+      "schemas" : {
+        "GitLabPayload" : {
+          "type" : "object",
+          "properties" : {
+            "project" : {
+              "$ref" : "#/components/schemas/GitLabPayload_project"
+            },
+            "ref" : {
+              "type" : "string",
+              "example" : "refs/heads/master"
+            },
+            "user_username" : {
+              "type" : "string",
+              "example" : "user"
+            },
+            "user_email" : {
+              "type" : "string",
+              "example" : "user@user.com"
+            },
+            "user_avatar" : {
+              "type" : "string",
+              "example" : "user_avatar"
+            },
+            "commits" : {
+              "type" : "string"
+            }
+          }
+        },
+        "GitHubPayload" : {
+          "type" : "object",
+          "properties" : {
+            "repository" : {
+              "$ref" : "#/components/schemas/GitHubPayload_repository"
+            },
+            "ref" : {
+              "type" : "string",
+              "example" : "refs/heads/master"
+            },
+            "pusher" : {
+              "$ref" : "#/components/schemas/GitHubPayload_pusher"
+            },
+            "sender" : {
+              "$ref" : "#/components/schemas/GitHubPayload_sender"
+            },
+            "commits" : {
+              "type" : "string"
+            }
+          }
+        },
+        "Documentation" : {
+          "type" : "object",
+          "properties" : {
+            "paths" : {
+              "$ref" : "#/components/schemas/Documentation_paths"
+            }
+          }
+        },
+        "GitLabPayload_project" : {
+          "properties" : {
+            "path_with_namespace" : {
+              "type" : "string",
+              "format" : "string",
+              "example" : "me/my-repo"
+            },
+            "name" : {
+              "type" : "string",
+              "format" : "string",
+              "example" : "my-repo"
+            },
+            "web_url" : {
+              "type" : "string",
+              "format" : "string",
+              "example" : "http://me/my-repo.fr"
+            },
+            "http_url" : {
+              "type" : "string",
+              "format" : "string",
+              "example" : "http://me/my-repo-clone.fr"
+            },
+            "default_branch" : {
+              "type" : "string",
+              "format" : "string",
+              "example" : "master"
+            }
+          }
+        },
+        "GitHubPayload_repository" : {
+          "properties" : {
+            "full_name" : {
+              "type" : "string",
+              "format" : "string",
+              "example" : "me/my-repo"
+            },
+            "name" : {
+              "type" : "string",
+              "format" : "string",
+              "example" : "my-repo"
+            },
+            "url" : {
+              "type" : "string",
+              "format" : "string",
+              "example" : "http://me/my-repo.fr"
+            },
+            "clone_url" : {
+              "type" : "string",
+              "format" : "string",
+              "example" : "http://me/my-repo-clone.fr"
+            },
+            "default_branch" : {
+              "type" : "string",
+              "format" : "string",
+              "example" : "master"
+            }
+          }
+        },
+        "GitHubPayload_pusher" : {
+          "properties" : {
+            "name" : {
+              "type" : "string",
+              "example" : "user"
+            },
+            "email" : {
+              "type" : "string",
+              "example" : "user@user.fr"
+            }
+          }
+        },
+        "GitHubPayload_sender" : {
+          "properties" : {
+            "avatar_url" : {
+              "type" : "string",
+              "example" : "http://avatar.fr"
+            }
+          }
+        },
+        "Documentation_paths_github_post" : {
+          "properties" : {
+            "content" : {
+              "type" : "string"
+            }
+          }
+        },
+        "Documentation_paths_github" : {
+          "properties" : {
+            "post" : {
+              "$ref" : "#/components/schemas/Documentation_paths_github_post"
+            }
+          }
+        },
+        "Documentation_paths" : {
+          "properties" : {
+            "/github" : {
+              "$ref" : "#/components/schemas/Documentation_paths_github"
+            }
+          }
+        }
+      }
+    }
+  }
