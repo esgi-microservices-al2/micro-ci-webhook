@@ -1,78 +1,65 @@
 {
-    "openapi" : "3.0.0",
-    "info" : {
-      "title" : "MicroService WebHook",
-      "description" : "Receive payloads from git repositories and send it to a RabbitMQ instance",
-      "version" : "1.0.0"
+  "openapi" : "3.0.0",
+  "info" : {
+    "title" : "MicroService WebHook",
+    "description" : "Receive payloads from git repositories and send it to a RabbitMQ instance",
+    "version" : "1.0"
+  },
+  "servers" : [ {
+    "url" : "/"
+  } ],
+  "tags" : [ {
+    "name" : "Endpoints"
+  } ],
+  "paths" : {
+    "/" : {
+      "post" : {
+        "tags" : [ "Endpoints" ],
+        "summary" : "endpoint for Github, Gitlab or Bitbucket repositories",
+        "requestBody" : {
+          "description" : "GitHub Payload",
+          "content" : {
+            "application/json" : {
+              "schema" : {
+                "$ref" : "#/components/schemas/body"
+              },
+              "examples" : {
+                "Github" : {
+                  "$ref" : "#/components/examples/GitHubPayload"
+                },
+                "Gitlab" : {
+                  "$ref" : "#/components/examples/GitLabPayload"
+                },
+                "Bitbucket" : {
+                  "$ref" : "#/components/examples/BitBucketPayload"
+                }
+              }
+            }
+          }
+        },
+        "responses" : {
+          "200" : {
+            "description" : "success"
+          },
+          "400" : {
+            "description" : "bad request"
+          }
+        }
+      }
     },
-    "servers" : [ {
-      "url" : "/"
-    } ],
-    "tags" : [ {
-      "name" : "Endpoints"
-    } ],
-    "paths" : {
-      "/github" : {
-        "post" : {
-          "tags" : [ "Endpoints" ],
-          "summary" : "endpoint for github repositories",
-          "requestBody" : {
-            "description" : "GitHub Payload",
+    "/doc" : {
+      "get" : {
+        "tags" : [ "Endpoints" ],
+        "summary" : "endpoint for documentation",
+        "responses" : {
+          "200" : {
+            "description" : "Documentation",
             "content" : {
               "application/json" : {
                 "schema" : {
-                  "$ref" : "#/components/schemas/GitHubPayload"
-                }
-              }
-            }
-          },
-          "responses" : {
-            "200" : {
-              "description" : "success"
-            },
-            "400" : {
-              "description" : "bad request"
-            }
-          }
-        }
-      },
-      "/gitlab" : {
-        "post" : {
-          "tags" : [ "Endpoints" ],
-          "summary" : "endpoint for gitlab repositories",
-          "requestBody" : {
-            "content" : {
-              "application/json" : {
-                "schema" : {
-                  "$ref" : "#/components/schemas/GitLabPayload"
-                }
-              }
-            }
-          },
-          "responses" : {
-            "200" : {
-              "description" : "success"
-            },
-            "400" : {
-              "description" : "bad request"
-            }
-          }
-        }
-      },
-      "/doc" : {
-        "get" : {
-          "tags" : [ "Endpoints" ],
-          "summary" : "endpoint for documentation",
-          "responses" : {
-            "200" : {
-              "description" : "Documentation",
-              "content" : {
-                "application/json" : {
-                  "schema" : {
-                    "type" : "array",
-                    "items" : {
-                      "$ref" : "#/components/schemas/Documentation"
-                    }
+                  "type" : "array",
+                  "items" : {
+                    "$ref" : "#/components/schemas/Documentation"
                   }
                 }
               }
@@ -80,164 +67,333 @@
           }
         }
       }
+    }
+  },
+  "components" : {
+    "schemas" : {
+      "GitLabPayload" : {
+        "type" : "object",
+        "properties" : {
+          "project" : {
+            "$ref" : "#/components/schemas/GitLabPayload_project"
+          },
+          "ref" : {
+            "type" : "string",
+            "example" : "refs/heads/master"
+          },
+          "user_username" : {
+            "type" : "string",
+            "example" : "user"
+          },
+          "user_email" : {
+            "type" : "string",
+            "example" : "user@user.com"
+          },
+          "user_avatar" : {
+            "type" : "string",
+            "example" : "user_avatar"
+          },
+          "commits" : {
+            "type" : "string"
+          }
+        }
+      },
+      "GitLabPayload_project" : {
+        "properties" : {
+          "path_with_namespace" : {
+            "type" : "string",
+            "format" : "string",
+            "example" : "me/my-repo"
+          },
+          "name" : {
+            "type" : "string",
+            "format" : "string",
+            "example" : "my-repo"
+          },
+          "web_url" : {
+            "type" : "string",
+            "format" : "string",
+            "example" : "http://me/my-repo.fr"
+          },
+          "http_url" : {
+            "type" : "string",
+            "format" : "string",
+            "example" : "http://me/my-repo-clone.fr"
+          },
+          "default_branch" : {
+            "type" : "string",
+            "format" : "string",
+            "example" : "master"
+          }
+        }
+      },
+      "GitHubPayload" : {
+        "type" : "object",
+        "properties" : {
+          "repository" : {
+            "$ref" : "#/components/schemas/GitHubPayload_repository"
+          },
+          "ref" : {
+            "type" : "string",
+            "example" : "refs/heads/master"
+          },
+          "pusher" : {
+            "$ref" : "#/components/schemas/GitHubPayload_pusher"
+          },
+          "sender" : {
+            "$ref" : "#/components/schemas/GitHubPayload_sender"
+          },
+          "commits" : {
+            "type" : "string"
+          }
+        }
+      },
+      "Documentation" : {
+        "type" : "object",
+        "properties" : {
+          "paths" : {
+            "$ref" : "#/components/schemas/Documentation_paths"
+          }
+        }
+      },
+      "GitHubPayload_repository" : {
+        "properties" : {
+          "full_name" : {
+            "type" : "string",
+            "format" : "string",
+            "example" : "me/my-repo"
+          },
+          "name" : {
+            "type" : "string",
+            "format" : "string",
+            "example" : "my-repo"
+          },
+          "url" : {
+            "type" : "string",
+            "format" : "string",
+            "example" : "http://me/my-repo.fr"
+          },
+          "clone_url" : {
+            "type" : "string",
+            "format" : "string",
+            "example" : "http://me/my-repo-clone.fr"
+          },
+          "default_branch" : {
+            "type" : "string",
+            "format" : "string",
+            "example" : "master"
+          }
+        }
+      },
+      "GitHubPayload_pusher" : {
+        "properties" : {
+          "name" : {
+            "type" : "string",
+            "example" : "user"
+          },
+          "email" : {
+            "type" : "string",
+            "example" : "user@user.fr"
+          }
+        }
+      },
+      "GitHubPayload_sender" : {
+        "properties" : {
+          "avatar_url" : {
+            "type" : "string",
+            "example" : "http://avatar.fr"
+          }
+        }
+      },
+      "Documentation_paths_github_post" : {
+        "properties" : {
+          "content" : {
+            "type" : "string"
+          }
+        }
+      },
+      "Documentation_paths_github" : {
+        "properties" : {
+          "post" : {
+            "$ref" : "#/components/schemas/Documentation_paths_github_post"
+          }
+        }
+      },
+      "Documentation_paths" : {
+        "properties" : {
+          "/github" : {
+            "$ref" : "#/components/schemas/Documentation_paths_github"
+          }
+        }
+      },
+      "body" : {
+        "oneOf" : [ {
+          "$ref" : "#/components/schemas/GitHubPayload"
+        }, {
+          "$ref" : "#/components/schemas/GitLabPayload"
+        } ]
+      }
     },
-    "components" : {
-      "schemas" : {
-        "GitLabPayload" : {
-          "type" : "object",
-          "properties" : {
-            "project" : {
-              "$ref" : "#/components/schemas/GitLabPayload_project"
-            },
-            "ref" : {
-              "type" : "string",
-              "example" : "refs/heads/master"
-            },
-            "user_username" : {
-              "type" : "string",
-              "example" : "user"
-            },
-            "user_email" : {
-              "type" : "string",
-              "example" : "user@user.com"
-            },
-            "user_avatar" : {
-              "type" : "string",
-              "example" : "user_avatar"
-            },
-            "commits" : {
-              "type" : "string"
-            }
-          }
-        },
-        "GitHubPayload" : {
-          "type" : "object",
-          "properties" : {
-            "repository" : {
-              "$ref" : "#/components/schemas/GitHubPayload_repository"
-            },
-            "ref" : {
-              "type" : "string",
-              "example" : "refs/heads/master"
-            },
-            "pusher" : {
-              "$ref" : "#/components/schemas/GitHubPayload_pusher"
-            },
-            "sender" : {
-              "$ref" : "#/components/schemas/GitHubPayload_sender"
-            },
-            "commits" : {
-              "type" : "string"
-            }
-          }
-        },
-        "Documentation" : {
-          "type" : "object",
-          "properties" : {
-            "paths" : {
-              "$ref" : "#/components/schemas/Documentation_paths"
-            }
-          }
-        },
-        "GitLabPayload_project" : {
-          "properties" : {
-            "path_with_namespace" : {
-              "type" : "string",
-              "format" : "string",
-              "example" : "me/my-repo"
-            },
-            "name" : {
-              "type" : "string",
-              "format" : "string",
-              "example" : "my-repo"
-            },
-            "web_url" : {
-              "type" : "string",
-              "format" : "string",
-              "example" : "http://me/my-repo.fr"
-            },
-            "http_url" : {
-              "type" : "string",
-              "format" : "string",
-              "example" : "http://me/my-repo-clone.fr"
-            },
-            "default_branch" : {
-              "type" : "string",
-              "format" : "string",
-              "example" : "master"
-            }
-          }
-        },
-        "GitHubPayload_repository" : {
-          "properties" : {
-            "full_name" : {
-              "type" : "string",
-              "format" : "string",
-              "example" : "me/my-repo"
-            },
-            "name" : {
-              "type" : "string",
-              "format" : "string",
-              "example" : "my-repo"
-            },
-            "url" : {
-              "type" : "string",
-              "format" : "string",
-              "example" : "http://me/my-repo.fr"
-            },
-            "clone_url" : {
-              "type" : "string",
-              "format" : "string",
-              "example" : "http://me/my-repo-clone.fr"
-            },
-            "default_branch" : {
-              "type" : "string",
-              "format" : "string",
-              "example" : "master"
-            }
-          }
-        },
-        "GitHubPayload_pusher" : {
-          "properties" : {
-            "name" : {
-              "type" : "string",
-              "example" : "user"
-            },
-            "email" : {
-              "type" : "string",
-              "example" : "user@user.fr"
-            }
-          }
-        },
-        "GitHubPayload_sender" : {
-          "properties" : {
-            "avatar_url" : {
-              "type" : "string",
-              "example" : "http://avatar.fr"
-            }
-          }
-        },
-        "Documentation_paths_github_post" : {
-          "properties" : {
-            "content" : {
-              "type" : "string"
-            }
-          }
-        },
-        "Documentation_paths_github" : {
-          "properties" : {
-            "post" : {
-              "$ref" : "#/components/schemas/Documentation_paths_github_post"
-            }
-          }
-        },
-        "Documentation_paths" : {
-          "properties" : {
-            "/github" : {
-              "$ref" : "#/components/schemas/Documentation_paths_github"
-            }
+    "examples" : {
+      "GitLabPayload" : {
+        "value" : {
+          "project" : {
+            "path_with_namespace" : "me/my-repo",
+            "name" : "my-repo",
+            "web_url" : "http://me/my-repo.fr",
+            "http_url" : "http://me/my-repo-clone.fr",
+            "default_branch" : "master"
+          },
+          "ref" : "refs/heads/master",
+          "user_username" : "user",
+          "user_email" : "user@user.com",
+          "user_avatar" : "user_avatar",
+          "commits" : "string"
+        }
+      },
+      "GitHubPayload" : {
+        "value" : {
+          "repository" : {
+            "full_name" : "me/my-repo",
+            "name" : "my-repo",
+            "url" : "http://me/my-repo.fr",
+            "clone_url" : "http://me/my-repo-clone.fr",
+            "default_branch" : "master"
+          },
+          "ref" : "refs/heads/master",
+          "pusher" : {
+            "name" : "user",
+            "email" : "user@user.fr"
+          },
+          "sender" : {
+            "avatar_url" : "http://avatar.fr"
+          },
+          "commits" : "string"
+        }
+      },
+      "BitBucketPayload" : {
+        "value" : {
+          "actor" : "User",
+          "repository" : "Repository",
+          "push" : {
+            "changes" : [ {
+              "new" : {
+                "type" : "branch",
+                "name" : "name-of-branch",
+                "target" : {
+                  "type" : "commit",
+                  "hash" : "709d658dc5b6d6afcd46049c2f332ee3f515a67d",
+                  "author" : "User",
+                  "message" : "new commit message\n",
+                  "date" : "2015-06-09T03:34:49+00:00",
+                  "parents" : [ {
+                    "type" : "commit",
+                    "hash" : "1e65c05c1d5171631d92438a13901ca7dae9618c",
+                    "links" : {
+                      "self" : {
+                        "href" : "https://api.bitbucket.org/2.0/repositories/user_name/repo_name/commit/8cbbd65829c7ad834a97841e0defc965718036a0"
+                      },
+                      "html" : {
+                        "href" : "https://bitbucket.org/user_name/repo_name/commits/8cbbd65829c7ad834a97841e0defc965718036a0"
+                      }
+                    }
+                  } ],
+                  "links" : {
+                    "self" : {
+                      "href" : "https://api.bitbucket.org/2.0/repositories/user_name/repo_name/commit/c4b2b7914156a878aa7c9da452a09fb50c2091f2"
+                    },
+                    "html" : {
+                      "href" : "https://bitbucket.org/user_name/repo_name/commits/c4b2b7914156a878aa7c9da452a09fb50c2091f2"
+                    }
+                  }
+                },
+                "links" : {
+                  "self" : {
+                    "href" : "https://api.bitbucket.org/2.0/repositories/user_name/repo_name/refs/branches/master"
+                  },
+                  "commits" : {
+                    "href" : "https://api.bitbucket.org/2.0/repositories/user_name/repo_name/commits/master"
+                  },
+                  "html" : {
+                    "href" : "https://bitbucket.org/user_name/repo_name/branch/master"
+                  }
+                }
+              },
+              "old" : {
+                "type" : "branch",
+                "name" : "name-of-branch",
+                "target" : {
+                  "type" : "commit",
+                  "hash" : "1e65c05c1d5171631d92438a13901ca7dae9618c",
+                  "author" : "User",
+                  "message" : "old commit message\n",
+                  "date" : "2015-06-08T21:34:56+00:00",
+                  "parents" : [ {
+                    "type" : "commit",
+                    "hash" : "e0d0c2041e09746be5ce4b55067d5a8e3098c843",
+                    "links" : {
+                      "self" : {
+                        "href" : "https://api.bitbucket.org/2.0/repositories/user_name/repo_name/commit/9c4a3452da3bc4f37af5a6bb9c784246f44406f7"
+                      },
+                      "html" : {
+                        "href" : "https://bitbucket.org/user_name/repo_name/commits/9c4a3452da3bc4f37af5a6bb9c784246f44406f7"
+                      }
+                    }
+                  } ],
+                  "links" : {
+                    "self" : {
+                      "href" : "https://api.bitbucket.org/2.0/repositories/user_name/repo_name/commit/b99ea6dad8f416e57c5ca78c1ccef590600d841b"
+                    },
+                    "html" : {
+                      "href" : "https://bitbucket.org/user_name/repo_name/commits/b99ea6dad8f416e57c5ca78c1ccef590600d841b"
+                    }
+                  }
+                },
+                "links" : {
+                  "self" : {
+                    "href" : "https://api.bitbucket.org/2.0/repositories/user_name/repo_name/refs/branches/master"
+                  },
+                  "commits" : {
+                    "href" : "https://api.bitbucket.org/2.0/repositories/user_name/repo_name/commits/master"
+                  },
+                  "html" : {
+                    "href" : "https://bitbucket.org/user_name/repo_name/branch/master"
+                  }
+                }
+              },
+              "links" : {
+                "html" : {
+                  "href" : "https://bitbucket.org/user_name/repo_name/branches/compare/c4b2b7914156a878aa7c9da452a09fb50c2091f2..b99ea6dad8f416e57c5ca78c1ccef590600d841b"
+                },
+                "diff" : {
+                  "href" : "https://api.bitbucket.org/2.0/repositories/user_name/repo_name/diff/c4b2b7914156a878aa7c9da452a09fb50c2091f2..b99ea6dad8f416e57c5ca78c1ccef590600d841b"
+                },
+                "commits" : {
+                  "href" : "https://api.bitbucket.org/2.0/repositories/user_name/repo_name/commits?include=c4b2b7914156a878aa7c9da452a09fb50c2091f2&exclude=b99ea6dad8f416e57c5ca78c1ccef590600d841b"
+                }
+              },
+              "created" : false,
+              "forced" : false,
+              "closed" : false,
+              "commits" : [ {
+                "hash" : "03f4a7270240708834de475bcf21532d6134777e",
+                "type" : "commit",
+                "message" : "commit message\n",
+                "author" : "User",
+                "links" : {
+                  "self" : {
+                    "href" : "https://api.bitbucket.org/2.0/repositories/user/repo/commit/03f4a7270240708834de475bcf21532d6134777e"
+                  },
+                  "html" : {
+                    "href" : "https://bitbucket.org/user/repo/commits/03f4a7270240708834de475bcf21532d6134777e"
+                  }
+                }
+              } ],
+              "truncated" : false
+            } ]
           }
         }
       }
     }
   }
+}
