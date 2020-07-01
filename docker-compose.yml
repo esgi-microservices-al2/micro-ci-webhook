@@ -1,17 +1,12 @@
 version: '3'
 
 services:
-  mongo:
+  webhook:
     image: 'micro-ci-al2/micro-ci-webhook:latest'
     container_name: 'webhook'
     restart: always
     ports:
       - "${WEBHOOK_PORT:-9000}:3000"
     environment:
-      - BROKER_IP=${BROKER_IP:-broker}
-    networks:
-      - micro-ci:
+      - BROKER_IP=${BROKER_IP:-10.0.0.5:40701}
 
-networks:
-  micro-ci:
-    driver: bridge
