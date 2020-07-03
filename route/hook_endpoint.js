@@ -65,6 +65,28 @@ router.post('/', asyncMiddleware(async(req,res) =>{
         };
         req.body.commits.forEach(element => payload.commits.push(element));
     }
+    else{
+        let cloneUrl = "https://" + req.body.repository.workspace.slug + "@bitbucket.org/" + req.body.repository.workspace.slug + "/" + req.body.repository.name + ".git"; 
+        let branchName = req.body.push.changes[0].new.name;
+        var payload = {
+            repository: {
+                fullname: req.body.repository.full_name,
+                name: req.body.repository.name,
+                url: req.body.repository.links.html.href,
+                clone_url: cloneUrl,
+                default_branch: null,
+            },
+            commits: [ ],
+            branch: branchName,
+            user: {
+                username: req.body.actor.nickname,
+                email: null,
+                avatar: req.body.actor.links.avatar.href
+            },
+            timestamp: Date.now()
+        };
+        req.body.push.changes[0].commits.forEach(element => payload.commits.push(element));
+    }
 
     if (typeof payload == 'undefined')
         throw Error("payload should not be empty");
@@ -76,7 +98,7 @@ router.post('/', asyncMiddleware(async(req,res) =>{
             return res.status(200).json(response);
         }
     });
-    
+
 }));
 
 router.post('/github', asyncMiddleware(async(req, res) => {
