@@ -19,11 +19,9 @@ router.get('/', asyncMiddleware( async (req, res) => {
 }));
 
 router.post('/', asyncMiddleware(async(req,res) =>{
-    console.log(req.headers);
     let gitlabProvider = req.get('x-gitlab-event');
     let githubProvider = req.get('x-github-event');
-    console.log(githubProvider);
-    console.log(gitlabProvider);
+
     if(githubProvider !== undefined){
         let branchName = req.body.ref.toString().split('/').pop();
         var payload = {
@@ -78,9 +76,7 @@ router.post('/', asyncMiddleware(async(req,res) =>{
             return res.status(200).json(response);
         }
     });
-
-
-
+    
 }));
 
 router.post('/github', asyncMiddleware(async(req, res) => {
