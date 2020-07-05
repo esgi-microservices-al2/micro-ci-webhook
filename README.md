@@ -7,6 +7,8 @@
 Settez les variables d'environnement dans votre terminal :
 
 `set BROKER_IP=127.0.0.1` - IP du Broker
+`set BROKER_USERNAME=root` - Username du user du Broker
+`set BROKER_PASSWORD=root` - Password du user du Broker
 
 
 ## II. Lancement de l'API via avec npm
@@ -23,6 +25,12 @@ Lancer en mode "Dév":
 
 ```
 npm run dev
+```
+
+Lancer en mode "Prod":
+
+```
+node index.js
 ```
 
 ## III. Lancement de l'API avec Docker ou Docker-compose
