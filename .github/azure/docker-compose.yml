@@ -1,3 +1,17 @@
 version: '3'
 
-# Add your networks/volumes/services for your microservice
+services:
+  webhook:
+    image: 'esgimicroci/al2-webhook:latest'
+    container_name: 'micro-ci-webhook'
+    restart: always
+    ports:
+      - "${WEBHOOK_PORT:-9000}:3000"
+    environment:
+      - BROKER_IP=${BROKER_IP:-10.0.0.5:40701}
+    networks:
+      - micro-ci:
+
+networks:
+  micro-ci:
+    driver: bridge

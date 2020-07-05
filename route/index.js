@@ -22,6 +22,7 @@ class RouterBuilder {
             next();
           });
         app.use('/', require('./hook_endpoint'));
+        app.use('/doc', require('./doc_endpoint'));
     }
 }
 
