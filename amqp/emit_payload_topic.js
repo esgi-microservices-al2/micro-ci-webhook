@@ -9,7 +9,7 @@ function sendMessage(rountingKey, payload, callback) {
     const user = process.env.BROKER_USER;
     const password = process.env.BROKER_PASSWORD;
     const ip = process.env.BROKER_IP;
-    
+
     amqp.connect('amqp://'+user+':'+password+'@'+ip+'/', function (error0, connection) {
         try {
             if (error0) {
