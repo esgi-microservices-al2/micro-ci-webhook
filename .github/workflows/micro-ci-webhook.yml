@@ -45,6 +45,10 @@ jobs:
 
      - name: Azure CLI script
        uses: azure/CLI@v1
+       env:
+         BROKER_IP: ${{ secrets.BROKER_IP }}
+         BROKER_USER: ${{ secrets.BROKER_USER }}
+         BROKER_PASSWORD: ${{ secrets.BROKER_PASSWORD }}
        with:
          inlineScript: |
-           az vm run-command invoke -g ${{ secrets.AZURE_RESOURCE_GRP }} -n ${{ secrets.AZURE_VM }} --command-id RunShellScript --scripts "cd /home/micro-ci-al2/micro-ci-webhook && wget -q https://raw.githubusercontent.com/esgi-microservices-al2/micro-ci-webhook/master/.github/azure/docker-compose.yml -O docker-compose.yml && docker-compose stop && docker-compose rm && docker-compose up -e BROKER_USER=${{ secrets.BROKER_USER }} -e BROKER_PASSWORD=${{ secrets.BROKER_PASSWORD }} -e BROKER_IP=${{ secrets.BROKER_IP }} -d"
+           az vm run-command invoke -g ${{ secrets.AZURE_RESOURCE_GRP }} -n ${{ secrets.AZURE_VM }} --command-id RunShellScript --scripts "cd /home/micro-ci-al2/micro-ci-webhook && wget -q https://raw.githubusercontent.com/esgi-microservices-al2/micro-ci-webhook/master/.github/azure/docker-compose.yml -O docker-compose.yml && docker-compose stop && docker-compose rm && docker-compose up -e BROKER_USER=$BROKER_USER -e BROKER_PASSWORD=$BROKER_PASSWORD -e BROKER_IP=$BROKER_IP -d"
