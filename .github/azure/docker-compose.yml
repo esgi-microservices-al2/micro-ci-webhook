@@ -10,7 +10,7 @@ services:
     environment:
       - BROKER_IP=${BROKER_IP:-10.0.0.5:40701}
     networks:
-      - micro-ci:
+      - micro-ci
 
 networks:
   micro-ci:

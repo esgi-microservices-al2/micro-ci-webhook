@@ -6,7 +6,11 @@ function sendMessage(rountingKey, payload, callback) {
     let err = null;
     let res = null;
     let callbackCalled = false;
-    amqp.connect('amqp://'.concat(process.env.BROKER_IP), function (error0, connection) {
+    const user = proces.env.BROKER_USER;
+    const password = proces.env.BROKER_PASSWORD;
+    const ip = process.env.BROKER_IP;
+
+    amqp.connect('amqp://'+user+':'+password+'@'+ip, function (error0, connection) {
         try {
             if (error0) {
                 throw error0;
