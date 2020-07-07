@@ -20,7 +20,7 @@ function consul_register(){
       name: 'webhook',
       id: CONSUL_ID,
       address: '127.0.0.1',
-      port: process.env.WEBHOOK_PORT,
+      port: +process.env.WEBHOOK_PORT,
       tags: ['traefik.enable=true',
         'traefik.frontend.entryPoints=http',
         'traefik.frontend.rule=PathPrefixStrip:/webhook/'],
