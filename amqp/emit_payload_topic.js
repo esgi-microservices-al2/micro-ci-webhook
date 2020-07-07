@@ -6,7 +6,12 @@ function sendMessage(rountingKey, payload, callback) {
     let err = null;
     let res = null;
     let callbackCalled = false;
-    amqp.connect('amqp://'.concat(process.env.BROKER_IP), function (error0, connection) {
+    const user = process.env.BROKER_USER;
+    const password = process.env.BROKER_PASSWORD;
+    const ip = process.env.BROKER_IP;
+    const options = { credentials: require('amqplib').credentials.plain(user, password) };
+
+    amqp.connect('amqp://'+ip, options, function (error0, connection) {
         try {
             if (error0) {
                 throw error0;
@@ -28,7 +33,7 @@ function sendMessage(rountingKey, payload, callback) {
                     if (error2) {
                         throw error2;
                     }
-                    channel.bindQueue(q.queue, exchange, "webhook.payload.#");
+                    channel.bindQueue(q.queue, exchange, "webhook.payload");
                     channel.publish(exchange, rountingKey, Buffer.from(JSON.stringify(payload)));
                     res = "[x] Sent %s:'%s'" + rountingKey + ":" + payload;
 

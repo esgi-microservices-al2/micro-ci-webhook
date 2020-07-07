@@ -12,11 +12,11 @@ jobs:
       uses: actions/checkout@v1
 
     # Add your build steps here
-    - name: Setup node 
+    - name: Setup node
       uses: actions/setup-node@v1
       with:
         node-version: '14.x'
-        
+
     - name: Build project
       run: npm install && npm run build --if-present
 
@@ -35,7 +35,7 @@ jobs:
        with:
          username: ${{ secrets.DOCKER_USERNAME }}
          password: ${{ secrets.DOCKER_PASSWORD }}
-         repository: micro-ci-al2/micro-ci-webhook
+         repository: esgimicroci/al2-webhook
          tag_with_ref: true
 
      - name: Azure Login
@@ -47,4 +47,4 @@ jobs:
        uses: azure/CLI@v1
        with:
          inlineScript: |
-           az vm run-command invoke -g ${{ secrets.AZURE_RESOURCE_GRP }} -n ${{ secrets.AZURE_VM }} --command-id RunShellScript --scripts "cd /home/micro-ci-al2/micro-ci-webhook && wget -q https://raw.githubusercontent.com/esgi-microservices-al2/micro-ci-webhook/master/.github/azure/docker-compose.yml -O docker-compose.yml && docker-compose stop && docker-compose rm && docker-compose up -d"
+           az vm run-command invoke -g ${{ secrets.AZURE_RESOURCE_GRP }} -n ${{ secrets.AZURE_VM }} --command-id RunShellScript --scripts "cd /home/micro-ci-al2/micro-ci-webhook && wget -q https://raw.githubusercontent.com/esgi-microservices-al2/micro-ci-webhook/master/.github/azure/docker-compose.yml -O docker-compose.yml && docker-compose stop && docker-compose rm && docker-compose run --name=micro-ci-wehbook -p 9000:3000 -e BROKER_USER=${{ secrets.BROKER_USER }} -e BROKER_PASSWORD=${{ secrets.BROKER_PASSWORD }} -e BROKER_IP=${{ secrets.BROKER_IP }} -d webhook"
