@@ -53,13 +53,17 @@ docker run -e BROKER_IP -p 3000:3000 --name="micro-ci" micro-ci
 Lancer avec Docker-compose:
 
 ```
+docker-compose build
+```
+
+```
 docker-compose up -d
 ```
 
 Stopper avec Docker-compose:
 
 ```
-docker-compose down
+docker-compose stop
 ```
 
 ## IV. Collaborateurs
