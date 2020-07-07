@@ -1,16 +1,25 @@
 "use strict";
 
-var consul = require('consul')();
+var consul = require('consul');
 
 function consul_register(){
     const CONSUL_ID = require('uuid').v4();
     const HOST =  process.env.CONSUL_HOST;
     const PORT = process.env.CONSUL_PORT;
     
+    let consulOptions = {
+      host: HOST,
+      port: PORT,
+      secure: false,
+      defaults: {token: process.env.CONSUL_TOKEN}
+    };
+
+    let consulClient = consul(consulOptions);
+    
     let details = {
       name: 'webhook',
-      address: HOST,
-      port: PORT,
+      address: '127.0.0.1',
+      port: process.env.WEBHOOK_PORT,
       id: CONSUL_ID,
       check: {
         ttl: '10s',
@@ -25,51 +34,52 @@ function consul_register(){
     let details2 = {
       name: 'webhook',
       id: CONSUL_ID,
-      address: HOST,
-      port: PORT,
+      address: '127.0.0.1',
+      port: process.env.WEBHOOK_PORT,
       check: {
         deregistercriticalserviceafter: '1m',
-        tcp: `${HOST}:${PORT}`,
-        timeout: '3s',
-        interval: '1s'
+        ttl: '10s'
       }
     }
     
-    //console.log(`${CONSUL_ID}`);
     console.log(details);
     
-    consul.agent.service.register(details2, err => {
+    
+    /*consulClient.agent.service.register(details2, err => {
       if (err) throw new Error(err);
-      console.log('told Consul that we are healthy');
+      console.log('Registered service with ID of ${CONSUL_ID}');
     });
 
-    /*consul.agent.service.register({
-      id: CONSUL_ID,
-      name: 'webhook',
-      address: '${HOST}',
-      port: PORT,
-      tags: ['webhook'],
-      check: {
-        deregistercriticalserviceafter: '1m',
-        tcp: `${HOST}:${PORT}`,
-        timeout: '3s',
-        interval: '1s'
-      }
-     }, () => {
-    
-      const unregisterService = (err) => {
-       consul.agent.service.deregister(CONSUL_ID, () => {
-        process.exit(err ? 1 : 0);
-       });
-      };
-    });*/
-    consul.agent.service.register(details, err => {
-        setInterval(() => {
-            consul.agent.check.pass({id:`service:${CONSUL_ID}`}, err => {
-              if (err) throw new Error(err);
-              console.log('told Consul that we are healthy');
+    setInterval(() => {
+        consulClient.agent.check.pass({id:`service:${CONSUL_ID}`}, err => {
+	    if (err) throw new Error(err);
+  	    console.log('Check passed');
+	});
+    }, 5 * 1000);*/
+
+    var isRegistered = false;
+    consulClient.agent.service.register(details2, err => {
+	if (err) throw err;
+	isRegistered = true;
+	console.log(`Successfuly registered service with ID of ${CONSUL_ID}`);
+	setInterval(() => {
+            consulClient.agent.check.pass({id:`service:${CONSUL_ID}`}, err => {
+                if (err) throw err;
+                console.log('told Consul that we are healthy');
             });
-          }, 5 * 1000);
+        }, 5 * 1000);
+    });
+    process.on('SIGINT', () => {
+        if (isRegistered) {
+	    console.log(`De-registering service with ID of ${CONSUL_ID} from consul`);
+            consulClient.agent.service.deregister(CONSUL_ID, (err) => {
+      	        if (err) console.log("Error de§registering service from consul: " + err)
+	        if (!err) {
+		    isRegistered = false;
+	            console.log(`De-registered service with ID of ${CONSUL_ID}`)
+	        }
+	    });
+	}
     });
   }
 

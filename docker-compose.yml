@@ -2,7 +2,8 @@ version: '3'
 
 services:
   webhook:
-    image: 'micro-ci-al2/micro-ci-webhook:latest'
+    build: .
+    image: 'esgimicroci/al2-webhook:test'
     container_name: 'webhook'
     restart: always
     ports:
@@ -11,4 +12,4 @@ services:
       - BROKER_IP=${BROKER_IP:-10.0.0.5:40701}
       - CONSUL_HOST=${CONSUL_HOST:-10.0.0.5}
       - CONSUL_PORT=${CONSUL_PORT:-40601}
-
+      - CONSUL_TOKEN=${CONSUL_TOKEN:-azertyuiop}
