@@ -50,6 +50,12 @@ Lancer avec Docker-compose:
 docker-compose up -d
 ```
 
+Stopper avec Docker-compose:
+
+```
+docker-compose down
+```
+
 ## IV. Collaborateurs
 
 - Pauline ROUVEL
