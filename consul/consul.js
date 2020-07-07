@@ -21,6 +21,9 @@ function consul_register(){
       id: CONSUL_ID,
       address: '127.0.0.1',
       port: process.env.WEBHOOK_PORT,
+      tags: ['traefik.enable=true',
+        'traefik.frontend.entryPoints=http',
+        'traefik.frontend.rule=PathPrefixStrip:/'],
       check: {
         deregistercriticalserviceafter: '1m',
         ttl: '10s'
