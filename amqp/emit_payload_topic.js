@@ -9,8 +9,9 @@ function sendMessage(rountingKey, payload, callback) {
     const user = process.env.BROKER_USER;
     const password = process.env.BROKER_PASSWORD;
     const ip = process.env.BROKER_IP;
+    const options = { credentials: require('amqplib').credentials.plain(user, password) };
 
-    amqp.connect('amqp://'+user+':'+password+'@'+ip+'/', function (error0, connection) {
+    amqp.connect('amqp://'+ip, options, function (error0, connection) {
         try {
             if (error0) {
                 throw error0;

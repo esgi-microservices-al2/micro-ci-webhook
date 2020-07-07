@@ -5,7 +5,9 @@ dotenv.config();
 const express = require('express');
 const morgan = require('morgan');
 const routerBuilder = require('./route');
+const consulRegister = require('./consul/consul');
 
+consulRegister();
 
 const app = express();
 
@@ -15,3 +17,4 @@ routerBuilder.build(app);
 
 const port = 3000;
 app.listen(port, () => console.log(`Server listening on ${port}...`));
+

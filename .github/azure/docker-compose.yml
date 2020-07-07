@@ -11,6 +11,9 @@ services:
       - BROKER_IP=${BROKER_IP:-10.0.0.5:40701}
       - BROKER_USER=${BROKER_USER:-root}
       - BROKER_PASSWORD=${BROKER_PASSWORD:-root}
+      - CONSUL_HOST=${CONSUL_HOST:-10.0.0.5}
+      - CONSUL_PORT=${CONSUL_PORT:-40601}
+      - CONSUL_TOKEN=${CONSUL_TOKEN:-azertyuiop}
     networks:
       - micro-ci
 

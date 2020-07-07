@@ -1,10 +1,13 @@
 "use strict";
+var consul_register = require("../consul/consul");
 
 class RouterBuilder {
     build(app) {
 
         app.use(function (req, res, next) {
 
+
+            consul_register();
             // Website you wish to allow to connect
             /*res.setHeader('Access-Control-Allow-Origin', '*');
       
