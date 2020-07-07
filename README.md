@@ -6,11 +6,17 @@
 
 Settez les variables d'environnement dans votre terminal :
 
-`set BROKER_IP=127.0.0.1` - IP du Broker
+`set BROKER_IP=127.0.0.1:5672` - IP et PORT du Broker
 
 `set BROKER_USERNAME=root` - Username du user du Broker
 
 `set BROKER_PASSWORD=root` - Password du user du Broker
+
+`set CONSUL_HOST=127.0.0.1` - IP de Consul
+
+`set CONSUL_PORT=8500` - PORT de Consul
+
+`set CONSUL_TOKEN=azertyuiop` - TOKEN de Consul
 
 
 ## II. Lancement de l'API via avec npm
