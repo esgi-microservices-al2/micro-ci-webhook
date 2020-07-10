@@ -15,6 +15,7 @@ services:
       - CONSUL_PORT=${CONSUL_PORT:-40601}
       - CONSUL_TOKEN=${CONSUL_TOKEN:-azertyuiop}
       - WEBHOOK_PORT=${WEBHOOK_PORT:-9000}
+      - WEBHOOK_IP=${WEHBOOK_IP:-10.0.0.6}
     networks:
       - micro-ci
 
